@@ -14,13 +14,11 @@ export const useLoginForm = () => {
   const location = useLocation();
   const from = location.state?.from?.pathname || '/';
 
-  // 이메일 변경 핸들러
   const handleEmailChange = (value: string) => {
     setEmail(value);
     if (emailError) setEmailError('');
   };
 
-  // 이메일 유효성 검사
   const validateEmail = () => {
     if (!email) {
       setEmailError('ID를 입력해주세요.');
@@ -31,13 +29,18 @@ export const useLoginForm = () => {
     }
   };
 
-  // 비밀번호 변경 핸들러
   const handlePasswordChange = (value: string) => {
     setPassword(value);
-    if (passwordError) setPasswordError('');
+
+    if (!value) {
+        setPasswordError('PW를 입력해주세요.');
+    } else if (value.length < 8) {
+        setPasswordError('PW는 최소 8글자 이상이어야 합니다.');
+    } else {
+        setPasswordError('');
+    }
   };
 
-  // 비밀번호 유효성 검사
   const validatePassword = () => {
     if (!password) {
       setPasswordError('PW를 입력해주세요.');
@@ -48,12 +51,10 @@ export const useLoginForm = () => {
     }
   };
 
-  // 로그인 버튼 활성화 조건
   const isValid = useMemo(() => {
     return EMAIL_REGEX.test(email) && password.length >= 8;
   }, [email, password]);
 
-  // 로그인 버튼 클릭 시
   const handleLogin = () => {
     navigate(from, { replace: true });
   };
